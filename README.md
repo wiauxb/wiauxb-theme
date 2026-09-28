@@ -1,0 +1,259 @@
+# wiauxb-theme
+
+A [Touying](https://touying-typ.github.io/) slide theme, ported from my Beamer
+theme. Catppuccin colors, Roboto + JetBrainsMono, progress-bar frame titles,
+shadowed blocks, native syntax-highlighted code boxes, stickers and timelines.
+
+See [`examples/showcase.typ`](examples/showcase.typ) for every feature on one deck.
+
+## Install (local package)
+
+Typst can't fetch packages from git, so clone the repo and link it into your
+local package directory, under the version in `typst.toml`:
+
+```sh
+git clone <repo-url> ~/src/wiauxb-theme
+./install.sh            # from the clone: links it as @local/wiauxb-theme:<version>
+```
+
+`install.sh` creates a symlink, so `git pull` updates the theme in place. By
+hand it's just:
+
+```sh
+# Linux:  ~/.local/share/typst/packages     macOS: ~/Library/Application Support/typst/packages
+# Windows: %APPDATA%\typst\packages
+mkdir -p ~/.local/share/typst/packages/local/wiauxb-theme
+ln -s ~/src/wiauxb-theme ~/.local/share/typst/packages/local/wiauxb-theme/0.1.0
+```
+
+Then, in any deck, anywhere on disk:
+
+```typ
+#import "@local/wiauxb-theme:0.1.0": *
+```
+
+`@local` packages work with the Typst CLI and Tinymist (VS Code), but not in
+the typst.app web editor.
+
+### Prerequisites
+
+- **Typst** ≥ 0.13 (developed on 0.14.2).
+- **Fonts**, installed on your machine (packages can't ship fonts): `Roboto`
+  and a JetBrains Mono Nerd Font (Typst sees it as `JetBrainsMono NFM`). Check
+  with `typst fonts`. Other fonts: `font:` / `mono-font:` / `icon-font:`
+  options of `wiauxb-theme` (the icon font must be a Nerd Font).
+- Internet on first compile: Typst downloads the dependencies (`touying`,
+  `catppuccin`, `showybox`, `cetz`) from Typst Universe into its cache.
+
+## Start a new deck
+
+```sh
+typst init @local/wiauxb-theme:0.1.0 my-talk
+cd my-talk && typst watch main.typ
+```
+
+This copies [`template/main.typ`](template/main.typ): title, outline, a
+section and a frame.
+
+### File paths
+
+A package can't read files from your project, so anything that loads a file
+takes the loaded content, not a path:
+
+```typ
+#codefile(read("src/main.rs"), name: "main.rs")   // not codefile("src/main.rs")
+#sticker(image("images/meme.png"))               // not sticker("images/meme.png")
+```
+
+## Contributing
+
+Edit `lib.typ` in your clone; every deck importing `@local/wiauxb-theme:0.1.0`
+picks the change up on the next compile. Check your change against the
+showcase:
+
+```sh
+typst compile examples/showcase.typ
+```
+
+For breaking changes, tag the current release, bump `version` in `typst.toml`
+(and the import in `template/main.typ`, `examples/showcase.typ` and this
+README), then re-run `./install.sh`. The symlink always points at your working
+copy, so to keep an old version for old decks, install it from its own
+checkout:
+
+```sh
+git worktree add ~/src/wiauxb-theme-0.1.0 v0.1.0 && ~/src/wiauxb-theme-0.1.0/install.sh
+```
+
+## Minimal deck
+
+```typ
+#import "@local/wiauxb-theme:0.1.0": *
+
+#show: wiauxb-theme.with(
+  // dark: true,            // Macchiato instead of Latte
+  accent: "blue",           // any Catppuccin color name, or omit -> auto
+  secondary: "maroon",
+  config-info(
+    title:    [My talk],
+    subtitle: [An optional subtitle],
+    author:   [Bastien Wiaux],
+    date:     datetime.today().display(),
+    logo:     image("logo.png"),   // footer (small) + title slide (larger)
+  ),
+)
+
+#title-slide()
+
+= A section            // appears in the outline + footer; does NOT make a slide
+== A frame title       // each "==" starts a new slide
+Body text here.
+```
+
+## The structure ↔ Beamer cheat sheet
+
+| Beamer | Here |
+|---|---|
+| `\usepackage[accent=Blue]{wiauxb-beamer}` | `#show: wiauxb-theme.with(accent: "blue", ...)` |
+| `dark` option | `dark: true` |
+| `\title{}` `\subtitle{}` `\author{}` `\date{}` `\logo{}` | fields of `config-info(...)` |
+| `\begin{frame}{Title}{Subtitle}` | `== Title` then `#subtitle[Subtitle]` (shown right of the title, em-dash separated) |
+| `\section{X}` | `= X` (outline + footer only, no slide) |
+| `\begin{frame}{}` (empty body, big centered title) | `#focus-slide[Big text]` |
+| `\begin{block}{T}...\end{block}` | `#block-(title: "T")[...]` |
+| `\begin{alertblock}{T}...` | `#alert-block(title: "T")[...]` |
+| `\begin{exampleblock}{T}...` | `#example-block(title: "T")[...]` |
+| `theorem`/`definition`/... | `#theorem-block(title: "T")[...]` |
+| `\begin{quote}[Author]...` | `#quote(block: true, attribution: [Author])[...]` |
+| `\begin{codeblock}{lang}...` | `#code-block(title: "f.rs", lang: "rust")[ ```rust ... ``` ]` |
+| `\codefile{lang}{file}` | `#codefile(read("path/file.rs"), name: "file.rs")` (lang/title from `name`) |
+| `\begin{accordionblock}<2->{T}...` | `#accordion-block(title: "T", reveal: "2-")[...]` |
+| `\alert{x}` | `#alert[x]` |
+| `\sout{x}` | `#strike[x]` |
+| `\nerdicon{}` | `#nerd[\u{f015}]` (or `#nerd(color: blue)[...]`) |
+| decorated `\includegraphics{fig}` | `#framed-image(image("fig.png", width: 80%))` |
+| multiple `\includegraphics` (logos) | `#logos(image("a.svg", height: 1em), ...)` |
+| `\htimeline[active=N]{a,b,c}` | `#htimeline(("a","b","c"), active: N)` |
+| `\htimeline[from=,to=]{y/lbl}` | `#htimeline-dates(((2020,"v1"),..), from:, to:, active: N)` |
+| `vtimeline` + `\tentry{T}{D}` | `#vtimeline(active: N, (title:"T", desc:"D", icon: "\u{..}"), ...)` |
+
+### The recolored "quirks" (kept from the Beamer theme)
+
+These standard markups are **recolored**, exactly like in the Beamer theme:
+
+- `*bold*` → **accent** color
+- `_italic_` → accent color, italic
+- `` `inline code` `` → a subtle code "chip" (tinted background, neutral text).
+  Single backticks have no language. For a *highlighted* inline snippet use
+  triple backticks on one line — ` ```rust let x = 1``` ` — or the raw
+  function — `#raw("let x = 1", lang: "rust")`.
+
+(In LaTeX you had `\textbf`→accent, `\emph`→accent, `\textit`→secondary,
+`\texttt`→secondary. Typst collapses `\emph`/`\textit` into one `_..._`, so
+both go to **accent**. If you want a different split, say so.)
+
+## Overlays / incremental reveal (the `\pause` / `<1-4>` equivalent)
+
+Touying handles this natively:
+
+```typ
+== Reveal step by step
+First line. #pause
+Second line appears next. #pause
+Third line.
+```
+
+```typ
+Always here.
+#uncover("2-")[appears from subslide 2, but reserves its space]
+#only("3")[only on subslide 3, reserves no space]
+#alternatives[shown on 1][shown on 2]
+```
+
+Overlay specs are like Beamer: `"2-"`, `"2-3"`, `"1,3-"`, or a bare int.
+
+### Stickers (an image slapped on top of a slide)
+
+```typ
+== Intro
+Tools: #pause
+- A #pause
+- B
+#sticker(image("images/meme.png"))                                 // appears with "B"
+#sticker(image("images/other.png"), at: top + right, reveal: "2-3") // only on steps 2–3
+```
+
+Options: `at:` (page alignment, default `center + horizon`), `dx:`/`dy:` (nudge),
+`width:` (length or % of page width; rescales the content, default `auto` = natural size), `angle:` (default `0deg`),
+`reveal:` (overlay spec; default = from the current `#pause` step). The sticker can be any
+content (`#sticker([#emoji.fire])`). Positions are relative to the whole page;
+stickers take no space and are drawn above everything (title, header, footer).
+Without `reveal:`, a sticker follows `#pause` like normal content. With an
+explicit `reveal:`, put it **at the end of the frame**: in touying, a `#pause`
+that follows a `reveal`-style overlay continues after it, pushing later steps back.
+On the title slide, pass them
+as its body: `#title-slide[#sticker(image("…"), at: center + horizon)]`.
+
+Without `width:`, content keeps its own size, so you can also size it yourself
+— an emoji is text, so use the font size (or `scale` for anything):
+
+```typ
+#sticker(text(size: 5em)[#emoji.fire])            // 5× the current font size
+#sticker(text(size: 3cm)[🔥])                      // absolute size
+#sticker(scale(300%, reflow: true)[#emoji.fire])  // works on any content
+#sticker(image("images/x.png", height: 3cm))      // own image() sizing wins
+```
+
+## Customizing
+
+- **Colors**: any Catppuccin name works for `accent`/`secondary`:
+  `rosewater, flamingo, pink, mauve, red, maroon, peach, yellow, green, teal,
+  sky, sapphire, blue, lavender`.
+- **Logo**: pass `logo: image("logo.png")` — the theme auto-fits it to each
+  slot (small in the footer, larger on the title slide), so you don't size it
+  yourself. (Typst idiom: a bare `image()` fills 100% of its container width
+  and overflows; the theme's `fit-height` helper scales it to a fixed height
+  instead. Tune those heights — `0.8cm` footer, `1.2cm` title — in `lib.typ`.)
+- **Multiple logos**: wrap them with the `logos(...)` helper — they're laid out
+  in one row and fitted together:
+  ```typ
+  logo: logos(
+    image("uclouvain.svg", height: 1em),
+    image("hexrays.svg",   height: 1em),
+  )            // `gap:` controls spacing; only the relative heights matter
+  ```
+- **Vertically center slide bodies**: pass `center-body: true` to
+  `wiauxb-theme.with(...)`. The frame title stays at the top and the footer at
+  the bottom; only the body is centered between them. Per-slide override:
+  `#slide(setting: body => align(top, body))[...]`.
+- **Base font size**: edit `set text(... size: 22pt)` in `lib.typ` (`init`).
+- **Sections** (`= X`) never produce a slide — they only populate the outline
+  and the footer. For a standalone big centered title card, use
+  `#focus-slide[Big text]` wherever you want one.
+- **Shadow / corners**: tweak `_shadow()` and the `radius:` fields in
+  `lib.typ`.
+
+## Notes
+
+Timelines: `active:` controls how much is highlighted — `N` (first N entries),
+`-1` (all, the default), or `auto` (advances with subslides, so one call
+animates). Vertical entries are dicts `(title:, desc:, icon:)`; `desc`/`icon`
+are optional. `htimeline-dates` entries are years or `(year, label)` pairs;
+labels show above a dot only when they differ from the year.
+
+Accordion notes: `reveal:` takes an overlay spec (`"2-"`, `"3"`, `"2-4"`);
+omit it for an always-open block. A collapsed block shows its title bar plus a
+small empty body strip (showybox always draws a body section).
+
+Figures use the explicit `#framed-image(...)` helper rather than auto-wrapping
+every image (that would also frame the logos). White card by default; override
+with `fill: none` (transparent), `fill: auto` (theme base), or any color.
+
+Code blocks wrap long lines at spaces and break inside long unbroken tokens
+(Beamer breaklines/breakanywhere) — handy for long config/regex lines.
+
+Behavioral notes:
+
+- An over-full slide **flows onto a second page** with the same title (Typst
+  reflows content); Beamer would just overflow off the slide. Keep slides
+  from overfilling, or split them.

@@ -1,0 +1,15 @@
+[package]
+name = "wiauxb-theme"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["Bastien Wiaux"]
+license = "MIT"
+description = "A Touying slide theme with Catppuccin colors, progress-bar frame titles, shadowed blocks and timelines."
+keywords = ["slides", "presentation", "touying", "catppuccin", "beamer"]
+categories = ["presentation"]
+compiler = "0.13.0"
+exclude = ["examples", "*.pdf"]
+
+[template]
+path = "template"
+entrypoint = "main.typ"

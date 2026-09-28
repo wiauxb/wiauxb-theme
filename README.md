@@ -8,22 +8,11 @@ See [`examples/showcase.typ`](examples/showcase.typ) for every feature on one de
 
 ## Install (local package)
 
-Typst can't fetch packages from git, so clone the repo and link it into your
-local package directory, under the version in `typst.toml`:
+Typst can't fetch packages from git, so clone the repo and install from it:
 
 ```sh
 git clone <repo-url> ~/src/wiauxb-theme
-./install.sh            # from the clone: links it as @local/wiauxb-theme:<version>
-```
-
-`install.sh` creates a symlink, so `git pull` updates the theme in place. By
-hand it's just:
-
-```sh
-# Linux:  ~/.local/share/typst/packages     macOS: ~/Library/Application Support/typst/packages
-# Windows: %APPDATA%\typst\packages
-mkdir -p ~/.local/share/typst/packages/local/wiauxb-theme
-ln -s ~/src/wiauxb-theme ~/.local/share/typst/packages/local/wiauxb-theme/0.1.0
+~/src/wiauxb-theme/install.sh          # latest release
 ```
 
 Then, in any deck, anywhere on disk:
@@ -31,6 +20,18 @@ Then, in any deck, anywhere on disk:
 ```typ
 #import "@local/wiauxb-theme:0.1.0": *
 ```
+
+Imports pin an exact version: a deck keeps using the version it names until
+you edit its import, even after newer ones are installed. To get a new
+release, `git pull` then `./install.sh` again (or `./install.sh 0.1.1`,
+`./install.sh --all`). See [`CHANGELOG.md`](CHANGELOG.md) for what changed
+between versions.
+
+Each release is installed as a frozen copy of its git tag, in Typst's local
+package directory (Linux: `~/.local/share/typst/packages/local/`, macOS:
+`~/Library/Application Support/typst/packages/local/`). The script needs
+`sh` and `git`. On Windows (untested), run it from Git Bash with `TYPST_PACKAGE_PATH`
+set to `%APPDATA%\typst\packages`.
 
 `@local` packages work with the Typst CLI and Tinymist (VS Code), but not in
 the typst.app web editor.
@@ -67,23 +68,8 @@ takes the loaded content, not a path:
 
 ## Contributing
 
-Edit `lib.typ` in your clone; every deck importing `@local/wiauxb-theme:0.1.0`
-picks the change up on the next compile. Check your change against the
-showcase:
-
-```sh
-typst compile examples/showcase.typ
-```
-
-For breaking changes, tag the current release, bump `version` in `typst.toml`
-(and the import in `template/main.typ`, `examples/showcase.typ` and this
-README), then re-run `./install.sh`. The symlink always points at your working
-copy, so to keep an old version for old decks, install it from its own
-checkout:
-
-```sh
-git worktree add ~/src/wiauxb-theme-0.1.0 v0.1.0 && ~/src/wiauxb-theme-0.1.0/install.sh
-```
+See [`CONTRIBUTING.md`](CONTRIBUTING.md): how to test changes with a dev
+install, what version to bump, and how to cut a release.
 
 ## Minimal deck
 

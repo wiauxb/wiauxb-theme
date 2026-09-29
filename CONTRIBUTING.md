@@ -50,11 +50,13 @@ Before 1.0, `0.MINOR.PATCH`:
 | Change | Bump | Example |
 |---|---|---|
 | Breaking: a deck that compiled before errors, or looks different in a way its author would notice (renamed/removed option, changed signature, different default) | minor: `0.1.3 → 0.2.0` | `codefile` taking content instead of a path |
-| New function or option, old decks unchanged | minor: `0.1.3 → 0.2.0` | a new `quote-block` |
+| New function or option, old decks unchanged | minor: `0.1.3 → 0.1.4` | a new `quote-block` |
 | Bug fix, small visual correction | patch: `0.1.3 → 0.1.4` | wrong text color in dark mode |
 
 Several changes can go into the same unreleased version; use the biggest
 bump any of them needs.
+
+We will bump to 1.0.0 once the theme is well matured and tested enough.
 
 ## Release
 

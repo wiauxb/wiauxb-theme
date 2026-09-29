@@ -1,7 +1,7 @@
 # wiauxb-theme
 
-A [Touying](https://touying-typ.github.io/) slide theme, ported from my Beamer
-theme. Catppuccin colors, Roboto + JetBrainsMono, progress-bar frame titles,
+A [Touying](https://touying-typ.github.io/) slide theme.
+Catppuccin colors, Roboto + JetBrainsMono, progress-bar frame titles,
 shadowed blocks, native syntax-highlighted code boxes, stickers and timelines.
 
 See [`examples/showcase.typ`](examples/showcase.typ) for every feature on one deck.
@@ -96,34 +96,7 @@ install, what version to bump, and how to cut a release.
 Body text here.
 ```
 
-## The structure ↔ Beamer cheat sheet
-
-| Beamer | Here |
-|---|---|
-| `\usepackage[accent=Blue]{wiauxb-beamer}` | `#show: wiauxb-theme.with(accent: "blue", ...)` |
-| `dark` option | `dark: true` |
-| `\title{}` `\subtitle{}` `\author{}` `\date{}` `\logo{}` | fields of `config-info(...)` |
-| `\begin{frame}{Title}{Subtitle}` | `== Title` then `#subtitle[Subtitle]` (shown right of the title, em-dash separated) |
-| `\section{X}` | `= X` (outline + footer only, no slide) |
-| `\begin{frame}{}` (empty body, big centered title) | `#focus-slide[Big text]` |
-| `\begin{block}{T}...\end{block}` | `#block-(title: "T")[...]` |
-| `\begin{alertblock}{T}...` | `#alert-block(title: "T")[...]` |
-| `\begin{exampleblock}{T}...` | `#example-block(title: "T")[...]` |
-| `theorem`/`definition`/... | `#theorem-block(title: "T")[...]` |
-| `\begin{quote}[Author]...` | `#quote(block: true, attribution: [Author])[...]` |
-| `\begin{codeblock}{lang}...` | `#code-block(title: "f.rs", lang: "rust")[ ```rust ... ``` ]` |
-| `\codefile{lang}{file}` | `#codefile(read("path/file.rs"), name: "file.rs")` (lang/title from `name`) |
-| `\begin{accordionblock}<2->{T}...` | `#accordion-block(title: "T", reveal: "2-")[...]` |
-| `\alert{x}` | `#alert[x]` |
-| `\sout{x}` | `#strike[x]` |
-| `\nerdicon{}` | `#nerd[\u{f015}]` (or `#nerd(color: blue)[...]`) |
-| decorated `\includegraphics{fig}` | `#framed-image(image("fig.png", width: 80%))` |
-| multiple `\includegraphics` (logos) | `#logos(image("a.svg", height: 1em), ...)` |
-| `\htimeline[active=N]{a,b,c}` | `#htimeline(("a","b","c"), active: N)` |
-| `\htimeline[from=,to=]{y/lbl}` | `#htimeline-dates(((2020,"v1"),..), from:, to:, active: N)` |
-| `vtimeline` + `\tentry{T}{D}` | `#vtimeline(active: N, (title:"T", desc:"D", icon: "\u{..}"), ...)` |
-
-### The recolored "quirks" (kept from the Beamer theme)
+### Some "quirks" (because I like the aesthetics of it)
 
 These standard markups are **recolored**, exactly like in the Beamer theme:
 
@@ -134,11 +107,7 @@ These standard markups are **recolored**, exactly like in the Beamer theme:
   triple backticks on one line — ` ```rust let x = 1``` ` — or the raw
   function — `#raw("let x = 1", lang: "rust")`.
 
-(In LaTeX you had `\textbf`→accent, `\emph`→accent, `\textit`→secondary,
-`\texttt`→secondary. Typst collapses `\emph`/`\textit` into one `_..._`, so
-both go to **accent**. If you want a different split, say so.)
-
-## Overlays / incremental reveal (the `\pause` / `<1-4>` equivalent)
+## Overlays / incremental reveal
 
 Touying handles this natively:
 
@@ -156,45 +125,12 @@ Always here.
 #alternatives[shown on 1][shown on 2]
 ```
 
-Overlay specs are like Beamer: `"2-"`, `"2-3"`, `"1,3-"`, or a bare int.
-
-### Stickers (an image slapped on top of a slide)
-
-```typ
-== Intro
-Tools: #pause
-- A #pause
-- B
-#sticker(image("images/meme.png"))                                 // appears with "B"
-#sticker(image("images/other.png"), at: top + right, reveal: "2-3") // only on steps 2–3
-```
-
-Options: `at:` (page alignment, default `center + horizon`), `dx:`/`dy:` (nudge),
-`width:` (length or % of page width; rescales the content, default `auto` = natural size), `angle:` (default `0deg`),
-`reveal:` (overlay spec; default = from the current `#pause` step). The sticker can be any
-content (`#sticker([#emoji.fire])`). Positions are relative to the whole page;
-stickers take no space and are drawn above everything (title, header, footer).
-Without `reveal:`, a sticker follows `#pause` like normal content. With an
-explicit `reveal:`, put it **at the end of the frame**: in touying, a `#pause`
-that follows a `reveal`-style overlay continues after it, pushing later steps back.
-On the title slide, pass them
-as its body: `#title-slide[#sticker(image("…"), at: center + horizon)]`.
-
-Without `width:`, content keeps its own size, so you can also size it yourself
-— an emoji is text, so use the font size (or `scale` for anything):
-
-```typ
-#sticker(text(size: 5em)[#emoji.fire])            // 5× the current font size
-#sticker(text(size: 3cm)[🔥])                      // absolute size
-#sticker(scale(300%, reflow: true)[#emoji.fire])  // works on any content
-#sticker(image("images/x.png", height: 3cm))      // own image() sizing wins
-```
+Overlay specs are like LateX Beamer: `"2-"`, `"2-3"`, `"1,3-"`, or a bare int.
 
 ## Customizing
 
 - **Colors**: any Catppuccin name works for `accent`/`secondary`:
-  `rosewater, flamingo, pink, mauve, red, maroon, peach, yellow, green, teal,
-  sky, sapphire, blue, lavender`.
+  `rosewater, flamingo, pink, mauve, red, maroon, peach, yellow, green, teal, sky, sapphire, blue, lavender`.
 - **Logo**: pass `logo: image("logo.png")` — the theme auto-fits it to each
   slot (small in the footer, larger on the title slide), so you don't size it
   yourself. (Typst idiom: a bare `image()` fills 100% of its container width

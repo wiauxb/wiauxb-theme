@@ -1,8 +1,8 @@
-#import "@local/wiauxb-theme:0.1.0": *
+#import "@local/wiauxb-theme:0.1.1": *
 
 #show: wiauxb-theme.with(
   // dark: true,
-  accent: "blue",                // any Catppuccin color name, or omit for auto
+  accent: "blue", // any Catppuccin color name, or omit for auto
   secondary: "maroon",
   config-info(
     title: [The wiauxb Typst theme],
@@ -13,7 +13,7 @@
     logo: logos(
       image("images/uclouvain-light.svg", height: 1em),
       image("images/hexrays.svg", height: 1em),
-    )
+    ),
   ),
 )
 
@@ -58,12 +58,12 @@ This is normal body text. Here is *bold (accent)*, _italic (accent)_, and
 ]
 
 #code-block(title: "demo.rs", lang: "rust")[
-```rust
-fn main() {
-    let xs = vec![1, 2, 3];
-    println!("{:?}", xs.iter().sum::<i32>());
-}
-```
+  ```rust
+  fn main() {
+      let xs = vec![1, 2, 3];
+      println!("{:?}", xs.iter().sum::<i32>());
+  }
+  ```
 ]
 
 == Figures
@@ -74,12 +74,12 @@ A framed figure (white card, outline, drop shadow):
 == Theorem & code 2
 
 #code-block(title: [], lang: "rust")[
-```rust
-fn main() {
-    let xs = vec![1, 2, 3];
-    println!("{:?}", xs.iter().sum::<i32>());
-}
-```
+  ```rust
+  fn main() {
+      let xs = vec![1, 2, 3];
+      println!("{:?}", xs.iter().sum::<i32>());
+  }
+  ```
 ]
 
 == inline code
@@ -130,7 +130,8 @@ f
 ]
 
 == Vertical (animates with subslides)
-#vtimeline(active: auto,
+#vtimeline(
+  active: auto,
   (title: "Define", desc: "scope and requirements", icon: "\u{f040}"),
   (title: "Build", desc: "implement and iterate", icon: "\u{f0ad}"),
   (title: "Ship", desc: "release", icon: "\u{f0e7}"),

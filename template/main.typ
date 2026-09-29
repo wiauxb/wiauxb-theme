@@ -1,18 +1,18 @@
 // =============================================================================
-//  New deck — created with `typst init @local/wiauxb-theme:0.1.0`.
+//  New deck — created with `typst init @local/wiauxb-theme:0.1.1`.
 //  Build:  typst watch main.typ   (or  typst compile main.typ)
 // =============================================================================
-#import "@local/wiauxb-theme:0.1.0": *
+#import "@local/wiauxb-theme:0.1.1": *
 
 #show: wiauxb-theme.with(
   // dark: true,                  // Macchiato instead of Latte
   // accent: "blue",              // any Catppuccin name, or omit for auto
   // secondary: "maroon",
   config-info(
-    title:    [Talk title],
+    title: [Talk title],
     subtitle: [Optional subtitle],
-    author:   [Your name],
-    date:     datetime.today().display(),
+    author: [Your name],
+    date: datetime.today().display(),
     // logo: logos(
     //   image("images/logo-a.svg", height: 1em),
     //   image("images/logo-b.svg", height: 1em),

@@ -5,7 +5,7 @@
 //
 //  Usage (see README.md / examples/showcase.typ):
 //
-//    #import "@local/wiauxb-theme:0.1.0": *
+//    #import "@local/wiauxb-theme:0.1.1": *
 //    #show: wiauxb-theme.with(
 //      dark: false,
 //      accent: "blue",          // any Catppuccin color name, or auto
@@ -721,7 +721,10 @@
       fit-height(info.logo, 1.2cm)
     }
   })
-  touying-slide(self: self, config: config, { extra; body })
+  touying-slide(self: self, config: config, {
+    extra
+    body
+  })
 })
 
 // ── Centered big-title slide (Beamer's empty-body frame) ───────────────────────

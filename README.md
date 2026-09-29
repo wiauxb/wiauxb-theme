@@ -11,8 +11,9 @@ See [`examples/showcase.typ`](examples/showcase.typ) for every feature on one de
 Typst can't fetch packages from git, so clone the repo and install from it:
 
 ```sh
-git clone <repo-url> ~/src/wiauxb-theme
-~/src/wiauxb-theme/install.sh          # latest release
+git clone https://github.com/wiauxb/wiauxb-theme.git
+cd wiauxb-theme
+./install.sh          # latest release
 ```
 
 Then, in any deck, anywhere on disk:

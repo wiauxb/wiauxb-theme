@@ -9,6 +9,9 @@ start with **Breaking** and say how to update an existing deck.
 
 ## Unreleased
 
+- `sticker`'s `width:` accepts `em` lengths (e.g. `width: 10em`), which
+  failed to compile before.
+
 ## 0.1.0 — 2026-09-28
 
 First version as a Typst package, extracted from the single-file theme

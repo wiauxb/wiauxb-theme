@@ -291,7 +291,7 @@
 #let fit-width(body, w) = context {
   let mw = measure(body).width
   if mw == 0pt { body } else {
-    scale((w / 1pt) / (mw / 1pt) * 100%, origin: left + top, reflow: true, body)
+    scale((w.to-absolute() / 1pt) / (mw / 1pt) * 100%, origin: left + top, reflow: true, body)
   }
 }
 
